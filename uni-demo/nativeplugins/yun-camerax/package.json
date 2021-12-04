@@ -1,0 +1,26 @@
+{
+	"name": "身份证相机",
+	"id": "yun-camerax",
+	"version": "1.1.0",
+	"description": "自定义身份证相机",
+	"_dp_type": "nativeplugin",
+	"_dp_nativeplugin": {
+		"android": {
+			"plugins": [{
+				"type": "module",
+				"name": "yun-camerax-module",
+				"class": "com.yun.camera.CameraModule"
+			}],
+			"integrateType": "aar",
+			"minSdkVersion": "26",
+			"useAndroidX": true,
+			"dependencies": [
+				"androidx.constraintlayout:constraintlayout:2.0.4",
+				"androidx.camera:camera-core:1.1.0-alpha01",
+				"androidx.camera:camera-camera2:1.1.0-alpha01",
+				"androidx.camera:camera-lifecycle:1.1.0-alpha01",
+				"androidx.camera:camera-view:1.0.0-alpha27"
+			]
+		}
+	}
+}
