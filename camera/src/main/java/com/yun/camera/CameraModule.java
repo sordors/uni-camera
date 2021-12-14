@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat;
 import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.bridge.JSCallback;
-import com.yun.camera.activity.CameraActivity;
 import com.yun.camera.activity.CameraxActivity;
 
 import java.lang.reflect.Method;
@@ -96,7 +95,6 @@ public class CameraModule extends WXSDKEngine.DestroyableModule {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 

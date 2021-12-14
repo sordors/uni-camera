@@ -39,6 +39,10 @@ public class ParamBean implements Serializable {
      */
     private String text = "触摸屏幕对焦";
 
+    /**
+     * ocr是否启动
+     */
+    private Boolean ocr = false;
 
     public void setType(Integer type) {
         this.type = type;
@@ -78,5 +82,13 @@ public class ParamBean implements Serializable {
 
     public void setLandscape(Boolean landscape) {
         this.landscape = landscape;
+    }
+
+    public Boolean getOcr() {
+        return ocr;
+    }
+
+    public void setOcr(Boolean ocr) {
+        this.ocr = ocr;
     }
 }

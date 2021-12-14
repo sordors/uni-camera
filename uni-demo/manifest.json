@@ -47,22 +47,7 @@
                 "ad" : {}
             }
         },
-        "nativePlugins" : {
-            "yun-camerax" : {
-                "__plugin_info__" : {
-                    "name" : "身份证相机",
-                    "description" : "身份证相机",
-                    "platforms" : "Android",
-                    "url" : "",
-                    "android_package_name" : "",
-                    "ios_bundle_id" : "",
-                    "isCloud" : false,
-                    "bought" : -1,
-                    "pid" : "",
-                    "parameters" : {}
-                }
-            }
-        }
+        "nativePlugins" : {}
     },
     /* 快应用特有相关 */
     "quickapp" : {},

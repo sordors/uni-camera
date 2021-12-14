@@ -11,10 +11,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.util.Size;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -57,13 +55,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by gxj on 2018/2/18 11:46.
+ * Created by gxj on 2021/11/18 11:46.
  * 拍照界面
  */
 public final class CameraxActivity extends FragmentActivity implements View.OnClickListener {
 
 
     public final static int REQUEST_CODE = 0X13;
+
+    private ProcessCameraProvider cameraProvider;
 
     private ImageCapture imageCapture;
     /**
@@ -122,7 +122,6 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
-
         setContentView(R.layout.camerax);
         cameraContainer = findViewById(R.id.camera_container);
         containerView = findViewById(R.id.camera_crop_container);
@@ -138,7 +137,6 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
         previewPicture = findViewById(R.id.preview_picture);
         imgPicture = findViewById(R.id.img_picture);
         touchText = findViewById(R.id.touch_text);
-
 
         //获取屏幕最小边，设置为cameraPreview较窄的一边
         float screenMinSize = Math.min(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
@@ -179,7 +177,6 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
             }
         }
 
-
         //手电筒配置
         if (paramBean.getEnableTorch()) {
             enableTorch.setVisibility(View.VISIBLE);
@@ -206,6 +203,22 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
         } else {
             startCamera();
             initListener();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (photoBitmap != null) {
+            if (!photoBitmap.isRecycled()) {
+                photoBitmap.recycle();
+                photoBitmap = null;
+            }
+        }
+
+        if (cameraProvider != null) {
+            cameraProvider.unbindAll();
+            cameraProvider = null;
         }
     }
 
@@ -261,7 +274,7 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
             @Override
             public void run() {
                 try {
-                    ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                    cameraProvider = cameraProviderFuture.get();
                     bindPreview(cameraProvider);
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
@@ -420,6 +433,7 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
         Intent intent = new Intent();
         intent.putExtra("result", FileUtil.getImgPath());
 
+
         setResult(CameraModule.RESULT_CODE, intent);
         finish();
     }
@@ -462,6 +476,8 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
             @Override
             public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                 previewPicture.setVisibility(View.VISIBLE);
+                LinearLayout.LayoutParams previewParams = new LinearLayout.LayoutParams((int) cameraView.getWidth(), (int) cameraView.getHeight());
+                findViewById(R.id.preview_picture_image).setLayoutParams(previewParams);
                 cameraOption.setVisibility(View.GONE);
                 cameraTakeOption.setVisibility(View.VISIBLE);
                 if (!paramBean.getLandscape()) {
