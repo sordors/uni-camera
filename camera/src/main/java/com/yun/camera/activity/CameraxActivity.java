@@ -432,7 +432,6 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
         Intent intent = new Intent();
         intent.putExtra("result", FileUtil.getImgPath());
 
-
         setResult(CameraModule.RESULT_CODE, intent);
         finish();
     }
