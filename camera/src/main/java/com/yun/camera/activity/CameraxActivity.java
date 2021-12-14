@@ -354,7 +354,6 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
         }, ContextCompat.getMainExecutor(this));
     }
 
-
     /**
      * 点击事件
      *
