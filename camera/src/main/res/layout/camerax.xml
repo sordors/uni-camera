@@ -7,68 +7,38 @@
     tools:ignore="MissingDefaultResource">
 
 
-    <LinearLayout
+    <RelativeLayout
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginBottom="136dp"
         android:background="@color/black"
         >
-
-        <LinearLayout
+        <androidx.camera.view.PreviewView
+            android:id="@+id/cameraView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_height="match_parent" />
 
-            <androidx.camera.view.PreviewView
-                android:id="@+id/cameraView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="136dp"
-            android:background="@color/black">
-
-        </FrameLayout>
-
-    </LinearLayout>
-
-
-
+    </RelativeLayout>
 
     <!--预览页面-->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/preview_picture"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginBottom="136dp"
         android:visibility="gone"
         android:background="@color/black"
         >
 
-        <LinearLayout
-            android:id="@+id/preview_picture_image"
+        <ImageView
+            android:id="@+id/img_picture"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/img_picture"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="136dp"
-            android:background="@color/black">
-
-        </FrameLayout>
-
-    </LinearLayout>
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -129,7 +99,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="134dp"
+            android:layout_height="136dp"
             android:background="@color/black">
 
             <LinearLayout

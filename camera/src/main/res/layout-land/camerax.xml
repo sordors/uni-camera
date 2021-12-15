@@ -7,68 +7,40 @@
     tools:ignore="MissingDefaultResource">
 
 
-    <LinearLayout
+    <RelativeLayout
+        android:layout_alignParentLeft="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:background="@color/black"
+        android:layout_marginRight="136dp"
         >
 
-        <LinearLayout
+        <androidx.camera.view.PreviewView
+            android:id="@+id/cameraView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_height="match_parent" />
 
-            <androidx.camera.view.PreviewView
-                android:id="@+id/cameraView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="136dp"
-            android:layout_height="match_parent"
-            android:background="@color/black">
-
-        </FrameLayout>
-
-    </LinearLayout>
-
-
-
+    </RelativeLayout>
 
     <!--预览页面-->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/preview_picture"
+        android:layout_alignParentLeft="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:visibility="gone"
+        android:layout_marginRight="136dp"
         android:background="@color/black"
         >
 
-        <LinearLayout
-            android:id="@+id/preview_picture_image"
+        <ImageView
+            android:id="@+id/img_picture"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/img_picture"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="136dp"
-            android:layout_height="match_parent"
-            android:background="@color/black">
-
-        </FrameLayout>
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -128,7 +100,8 @@
         <FrameLayout
             android:layout_width="136dp"
             android:layout_height="match_parent"
-            android:background="@color/black">
+            android:background="@color/black"
+            >
 
             <LinearLayout
                 android:id="@+id/camera_option"
@@ -183,10 +156,9 @@
                     android:layout_marginTop="72dp"
                     android:src="@mipmap/failed" />
             </LinearLayout>
-
-
         </FrameLayout>
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

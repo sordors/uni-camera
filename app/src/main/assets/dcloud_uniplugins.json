@@ -4,7 +4,7 @@
       "plugins": [
         {
           "type": "module",
-          "name": "YunCamerax-Module",
+          "name": "yun-camerax-module",
           "class": "com.yun.camera.CameraModule"
         }
       ]

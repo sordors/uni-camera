@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -88,7 +89,7 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
     private ImageView enableTorch;
     private ImageView takeSuccess;
     private ImageView takeCancel;
-    private LinearLayout previewPicture;
+    private RelativeLayout previewPicture;
     private ImageView imgPicture;
     private LinearLayout cameraOption;
     private LinearLayout cameraTakeOption;
@@ -474,8 +475,6 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
             @Override
             public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                 previewPicture.setVisibility(View.VISIBLE);
-                LinearLayout.LayoutParams previewParams = new LinearLayout.LayoutParams((int) cameraView.getWidth(), (int) cameraView.getHeight());
-                findViewById(R.id.preview_picture_image).setLayoutParams(previewParams);
                 cameraOption.setVisibility(View.GONE);
                 cameraTakeOption.setVisibility(View.VISIBLE);
                 if (!paramBean.getLandscape()) {
