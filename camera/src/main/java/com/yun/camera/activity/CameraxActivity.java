@@ -15,6 +15,7 @@ import android.util.Log;
 import android.util.Size;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraControl;
 import androidx.camera.core.CameraInfo;
@@ -40,6 +42,7 @@ import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -61,8 +64,10 @@ import java.util.concurrent.TimeUnit;
  */
 public final class CameraxActivity extends FragmentActivity implements View.OnClickListener {
 
+    String TAG = "CameraxActivity";
 
     public final static int REQUEST_CODE = 0X13;
+    public final static int BOTTOM_SIZE = 136;
 
     private ProcessCameraProvider cameraProvider;
 
@@ -105,15 +110,36 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
      */
     public static void navToCamera(Context context, JSONObject options) {
         Intent intent = new Intent(context, CameraxActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("options", options.toJSONString());
         ((Activity) context).startActivityForResult(intent, REQUEST_CODE);
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onDestroy() {
+        System.out.println("变量销毁");
+        super.onDestroy();
+        if (photoBitmap != null) {
+            if (!photoBitmap.isRecycled()) {
+                photoBitmap.recycle();
+                photoBitmap = null;
+            }
+        }
 
+        if (cameraProvider != null) {
+            cameraProvider.unbindAll();
+        }
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            Log.e(TAG, "已被销毁");
+        } else {
+            Log.e(TAG, "未被销毁");
+        }
         String planString = getIntent().getStringExtra("options");
-        Log.d("planString", planString);
+
         paramBean = JSONObject.parseObject(planString, ParamBean.class);
 
         super.onCreate(savedInstanceState);
@@ -122,6 +148,9 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN); // 隐藏状态栏
 
         setContentView(R.layout.camerax);
         cameraContainer = findViewById(R.id.camera_container);
@@ -207,21 +236,7 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (photoBitmap != null) {
-            if (!photoBitmap.isRecycled()) {
-                photoBitmap.recycle();
-                photoBitmap = null;
-            }
-        }
 
-        if (cameraProvider != null) {
-            cameraProvider.unbindAll();
-            cameraProvider = null;
-        }
-    }
 
     /**
      * 接收权限通知结果
@@ -286,12 +301,40 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
     }
 
     /**
+     * 获取相机尺寸
+     *
+     * @return
+     */
+    private Size getSize() {
+        float scale = getResources().getDisplayMetrics().density;
+        int px = (int) (BOTTOM_SIZE * scale + 0.5f);
+
+        int height = Math.min(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
+        int width = Math.max(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
+
+        if (!paramBean.getLandscape()) {
+            height = Math.max(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
+            width = Math.min(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
+            height = height - px;
+        } else {
+            width = width - px;
+        }
+
+        Log.e(TAG, "当前相机宽度: " + width);
+        Log.e(TAG, "当前相机高度: " + height);
+
+        Size screenAspectRatio = new Size(width, height);
+        return screenAspectRatio;
+    }
+
+    /**
      * 绑定相机
      *
      * @param cameraProvider
      */
     public void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
-        Size screenAspectRatio = new Size(cameraView.getWidth(), cameraView.getHeight());
+        cameraProvider.unbindAll();
+        Size screenAspectRatio = getSize();
 
         imageCapture = new ImageCapture.Builder()
                 .setFlashMode(ImageCapture.FLASH_MODE_AUTO)
@@ -313,11 +356,11 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build();
 
+
         try {
-            cameraProvider.unbindAll();
-            preview.setSurfaceProvider(cameraView.getSurfaceProvider());
-            Camera camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture, imageAnalyzer);
             //配置预览界面
+            Camera camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture, imageAnalyzer);
+            preview.setSurfaceProvider(cameraView.getSurfaceProvider());
             mCameraInfo = camera.getCameraInfo();
             mCameraControl = camera.getCameraControl();
         } catch (Exception exc) {
@@ -477,14 +520,9 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
                 previewPicture.setVisibility(View.VISIBLE);
                 cameraOption.setVisibility(View.GONE);
                 cameraTakeOption.setVisibility(View.VISIBLE);
-                if (!paramBean.getLandscape()) {
-                    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                    Matrix matrix = Tools.pictureDegree(file.getAbsolutePath());
-                    photoBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                } else {
-                    photoBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                }
-
+                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                Matrix matrix = Tools.pictureDegree(file.getAbsolutePath());
+                photoBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                 imgPicture.setImageBitmap(photoBitmap);
                 file.delete();
             }

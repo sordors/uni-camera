@@ -6,7 +6,7 @@
 			<view class="text-center"><button @click="demo2">人像面蒙版2</button></view>
 			<view class="text-center"><button @click="demo3">人像面蒙版3</button></view>
 			<view class="text-center"><button @click="backDemo1">国徽面蒙版1</button></view>
-			<view class="text-center"><button @click="backDemo2">国徽面蒙版3</button></view>
+			<view class="text-center"><button @click="backDemo2">国徽面蒙版2</button></view>
 			<view class="text-center"><button @click="backDemo3">国徽面蒙版3</button></view>
 			<view class="text-center"><button @click="custom1">取消手电筒</button></view>
 			<view class="text-center"><button @click="custom2">取消文字</button></view>
