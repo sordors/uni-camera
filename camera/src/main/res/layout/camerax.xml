@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:ignore="MissingDefaultResource">
 
-
+    <!-- android:layout_marginBottom="136dp"-->
     <RelativeLayout
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"

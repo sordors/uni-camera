@@ -13,6 +13,7 @@ import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -23,14 +24,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraControl;
 import androidx.camera.core.CameraInfo;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.FocusMeteringAction;
 import androidx.camera.core.FocusMeteringResult;
-import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.MeteringPoint;
@@ -42,13 +42,13 @@ import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.LifecycleOwner;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.yun.camera.CameraModule;
 import com.yun.camera.ParamBean;
 import com.yun.camera.R;
+import com.yun.camera.util.CameraConstant;
 import com.yun.camera.util.FileUtil;
 import com.yun.camera.util.Tools;
 
@@ -67,7 +67,6 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
     String TAG = "CameraxActivity";
 
     public final static int REQUEST_CODE = 0X13;
-    public final static int BOTTOM_SIZE = 136;
 
     private ProcessCameraProvider cameraProvider;
 
@@ -237,7 +236,6 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
     }
 
 
-
     /**
      * 接收权限通知结果
      *
@@ -306,25 +304,29 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
      * @return
      */
     private Size getSize() {
-        float scale = getResources().getDisplayMetrics().density;
-        int px = (int) (BOTTOM_SIZE * scale + 0.5f);
-
-        int height = Math.min(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
-        int width = Math.max(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
-
+        int height = Math.min(cameraView.getWidth(), cameraView.getHeight());
+        int width = Math.max(cameraView.getWidth(), cameraView.getHeight());
         if (!paramBean.getLandscape()) {
-            height = Math.max(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
-            width = Math.min(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
-            height = height - px;
-        } else {
-            width = width - px;
+            height = Math.max(cameraView.getWidth(), cameraView.getHeight());
+            width = Math.min(cameraView.getWidth(), cameraView.getHeight());
         }
-
-        Log.e(TAG, "当前相机宽度: " + width);
-        Log.e(TAG, "当前相机高度: " + height);
 
         Size screenAspectRatio = new Size(width, height);
         return screenAspectRatio;
+    }
+
+    /**
+     * 获取比例
+     * @return
+     */
+    public int aspectRatio() {
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+        double previewRatio = Math.max(width, height) * 1.0 / Math.min(width, height);
+        if (Math.abs(previewRatio - CameraConstant.RATIO_4_3_VALUE) <= Math.abs(previewRatio - CameraConstant.RATIO_16_9_VALUE)) {
+            return AspectRatio.RATIO_4_3;
+        }
+        return AspectRatio.RATIO_16_9;
     }
 
     /**
@@ -334,16 +336,17 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
      */
     public void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
         cameraProvider.unbindAll();
-        Size screenAspectRatio = getSize();
-
+        Size size = getSize();
+        int rotation = paramBean.getLandscape() ? Surface.ROTATION_90 : Surface.ROTATION_0;
         imageCapture = new ImageCapture.Builder()
                 .setFlashMode(ImageCapture.FLASH_MODE_AUTO)
-                .setTargetResolution(screenAspectRatio)
+                .setTargetResolution(size)
+                .setTargetRotation(rotation)
                 .build();
 
-        // .setTargetAspectRatio(AspectRatio.RATIO_16_9)预览配置
         Preview preview = new Preview.Builder()
-                .setTargetResolution(screenAspectRatio)
+                .setTargetResolution(size)
+                .setTargetRotation(rotation)
                 .build();
 
         // 选择摄像头配置，现在选择的是后置摄像头
@@ -351,15 +354,9 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build();
 
-        ImageAnalysis imageAnalyzer = new ImageAnalysis.Builder()
-                .setTargetResolution(screenAspectRatio)
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build();
-
-
         try {
             //配置预览界面
-            Camera camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture, imageAnalyzer);
+            Camera camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
             preview.setSurfaceProvider(cameraView.getSurfaceProvider());
             mCameraInfo = camera.getCameraInfo();
             mCameraControl = camera.getCameraControl();
@@ -520,8 +517,16 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
                 previewPicture.setVisibility(View.VISIBLE);
                 cameraOption.setVisibility(View.GONE);
                 cameraTakeOption.setVisibility(View.VISIBLE);
+
+                //photoBitmap = Tools.bitmapClip(file.getAbsolutePath());
                 Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                Matrix matrix = Tools.pictureDegree(file.getAbsolutePath());
+                Log.d("wld__________bitmap", "width:" + bitmap.getWidth() + "--->height:" + bitmap.getHeight());
+                Matrix matrix = new Matrix();
+                int degree = 0;
+                if (!paramBean.getLandscape()) {
+                    degree = 90;
+                }
+                matrix.postRotate(degree);
                 photoBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                 imgPicture.setImageBitmap(photoBitmap);
                 file.delete();

@@ -42,7 +42,6 @@ public final class Tools {
     }
 
 
-
     public static Matrix pictureDegree(String imgPath) {
         Matrix matrix = new Matrix();
         ExifInterface exif = null;
@@ -68,13 +67,24 @@ public final class Tools {
             default:
                 break;
         }
+
+        System.out.println("旋转角度：" + degree);
         matrix.postRotate(degree);
 
         return matrix;
     }
 
 
-    public static Bitmap bitmapClip(Context mContext, String imgPath) {
+    public static Bitmap bitmapClip(String imgPath) {
+        Bitmap bitmap = BitmapFactory.decodeFile(imgPath);
+        Log.d("wld__________bitmap", "width:" + bitmap.getWidth() + "--->height:" + bitmap.getHeight());
+        Matrix matrix = pictureDegree(imgPath);
+        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return bitmap;
+    }
+
+
+    public static Bitmap landscapeBitmapClip(Context mContext, String imgPath) {
         Bitmap bitmap = BitmapFactory.decodeFile(imgPath);
         Log.d("wld__________bitmap", "width:" + bitmap.getWidth() + "--->height:" + bitmap.getHeight());
         Matrix matrix = pictureDegree(imgPath);

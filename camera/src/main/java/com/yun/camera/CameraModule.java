@@ -72,6 +72,7 @@ public class CameraModule extends WXSDKEngine.DestroyableModule {
             JSCallback callback = uniJSCallbackMap.get("takePhoto");
             JSONObject respond = new JSONObject();
             respond.put("file", data.getStringExtra("result"));
+            respond.put("model", android.os.Build.MODEL);
             mWXSDKInstance.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + data.getStringExtra("result"))));
             callback.invoke(respond);
         } else {

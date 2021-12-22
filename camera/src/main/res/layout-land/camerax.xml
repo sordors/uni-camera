@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:ignore="MissingDefaultResource">
 
-
+    <!-- android:layout_marginRight="136dp"-->
     <RelativeLayout
         android:layout_alignParentLeft="true"
         android:layout_width="match_parent"
@@ -31,8 +31,8 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:visibility="gone"
-        android:layout_marginRight="136dp"
         android:background="@color/black"
+        android:layout_marginRight="136dp"
         >
 
         <ImageView

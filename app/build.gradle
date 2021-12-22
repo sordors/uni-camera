@@ -50,10 +50,10 @@ android {
             def date = new Date().format("yyyyMMdd" , TimeZone.getTimeZone("GMT+08"))
             if(variant.buildType.name.equals('debug')){
                 ///"commonui_${date}_${versionName}.apk"
-                outputFileName = "doctor.apk"
+                outputFileName = "dev.apk"
             }
             if(variant.buildType.name.equals('release')){
-                outputFileName = "doctor_${versionName}.apk"
+                outputFileName = "插件开发_V${versionName}.apk"
             }
         }
     }
