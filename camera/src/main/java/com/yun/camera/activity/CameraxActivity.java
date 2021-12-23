@@ -317,6 +317,7 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
 
     /**
      * 获取比例
+     *
      * @return
      */
     public int aspectRatio() {
@@ -517,17 +518,22 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
                 previewPicture.setVisibility(View.VISIBLE);
                 cameraOption.setVisibility(View.GONE);
                 cameraTakeOption.setVisibility(View.VISIBLE);
+                //就是针对NOVA9这手机
+                if (android.os.Build.MODEL == "NAM-AL00") {
+                    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    Log.d("wld__________bitmap", "width:" + bitmap.getWidth() + "--->height:" + bitmap.getHeight());
+                    Matrix matrix = new Matrix();
+                    int degree = 0;
+                    if (!paramBean.getLandscape()) {
+                        degree = 90;
+                    }
+                    matrix.postRotate(degree);
+                    photoBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
-                //photoBitmap = Tools.bitmapClip(file.getAbsolutePath());
-                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                Log.d("wld__________bitmap", "width:" + bitmap.getWidth() + "--->height:" + bitmap.getHeight());
-                Matrix matrix = new Matrix();
-                int degree = 0;
-                if (!paramBean.getLandscape()) {
-                    degree = 90;
+                } else {
+                    photoBitmap = Tools.bitmapClip(file.getAbsolutePath());
                 }
-                matrix.postRotate(degree);
-                photoBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
                 imgPicture.setImageBitmap(photoBitmap);
                 file.delete();
             }
