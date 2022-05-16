@@ -29,9 +29,9 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation fileTree(dir: 'libs', include: ['*.aar'])
-    implementation fileTree(dir: '../app/libs', include: ['uniapp-v8-release.aar'])
+    compileOnly fileTree(dir: 'libs', include: ['*.jar'])
+    compileOnly fileTree(dir: 'libs', include: ['*.aar'])
+    compileOnly fileTree(dir: '../app/libs', include: ['uniapp-v8-release.aar'])
 
     compileOnly 'androidx.recyclerview:recyclerview:1.0.0'
     compileOnly 'androidx.legacy:legacy-support-v4:1.0.0'

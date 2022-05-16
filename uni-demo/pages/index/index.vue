@@ -1,7 +1,6 @@
 <template>
 	<view>
 		<view class="bg-white page-container">
-			<view class="text-center"><button @click="location">定位测试</button></view>
 			<view class="text-center"><button @click="demo1">人像面蒙版1</button></view>
 			<view class="text-center"><button @click="demo2">人像面蒙版2</button></view>
 			<view class="text-center"><button @click="demo3">人像面蒙版3</button></view>
@@ -30,41 +29,6 @@ export default {
 	methods: {
 		imageError(e) {
 			console.error('image发生error事件，携带值为' + e.detail.errMsg);
-		},
-		location() {
-			let _this = this;
-			uni.getLocation({
-				type: 'gcj02',
-				success: function(data) {
-					uni.showModal({
-						title: '提示',
-						content: '当前位置的经度：' + data.longitude + '当前位置的纬度：' + data.latitude,
-						success: function(res) {
-							if (res.confirm) {
-								_this.copyData(data.longitude + ',' + data.latitude);
-								console.log('用户点击确定');
-							} else if (res.cancel) {
-								console.log('用户点击取消');
-							}
-						}
-					});
-					console.log('当前位置的经度：' + data.longitude);
-					console.log('当前位置的纬度：' + data.latitude);
-				}
-			});
-		},
-		copyData(content) {
-			uni.setClipboardData({
-				data: content,
-				success: function() {
-					uni.showToast({
-						title: '复制成功',
-						mask: false,
-						duration: 2000,
-						icon: 'none'
-					});
-				}
-			});
 		},
 		demo1() {
 			let _this = this;
