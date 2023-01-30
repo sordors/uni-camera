@@ -55,10 +55,10 @@
             android:orientation="horizontal">
 
             <View
+                android:id="@+id/backColor1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/preview_mock" />
+                android:layout_weight="1" />
 
             <LinearLayout
                 android:id="@+id/camera_crop_container"
@@ -67,10 +67,10 @@
                 android:orientation="vertical">
 
                 <View
+                    android:id="@+id/backColor2"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="@color/preview_mock" />
+                    android:layout_weight="1" />
 
                 <ImageView
                     android:id="@+id/camera_crop"
@@ -83,7 +83,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:background="@color/preview_mock"
                     android:gravity="center"
                     android:textColor="#afff"
                     android:textSize="16dp" />
@@ -91,10 +90,10 @@
             </LinearLayout>
 
             <View
+                android:id="@+id/backColor3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/preview_mock" />
+                android:layout_weight="1" />
         </LinearLayout>
 
         <FrameLayout

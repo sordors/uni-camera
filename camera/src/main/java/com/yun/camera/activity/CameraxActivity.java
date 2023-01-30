@@ -7,10 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -53,6 +56,8 @@ import com.yun.camera.util.FileUtil;
 import com.yun.camera.util.Tools;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -130,6 +135,26 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
         }
     }
 
+    /**
+     * 获取资源文件
+     *
+     * @param fileName
+     * @return
+     */
+    private Bitmap getImageFromAssetsFile(String fileName) {
+        Bitmap image = null;
+        AssetManager am = getResources().getAssets();
+        try {
+            InputStream is = am.open(fileName);
+            image = BitmapFactory.decodeStream(is);
+            is.close();
+        } catch (IOException e) {
+            Log.e(TAG, "文件未找到");
+        }
+
+        return image;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState == null) {
@@ -166,6 +191,18 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
         previewPicture = findViewById(R.id.preview_picture);
         imgPicture = findViewById(R.id.img_picture);
         touchText = findViewById(R.id.touch_text);
+
+        //背景色
+        View backColor1 = findViewById(R.id.backColor1);
+        View backColor2 = findViewById(R.id.backColor2);
+        View backColor3 = findViewById(R.id.backColor3);
+
+        if (!TextUtils.isEmpty(paramBean.getBackColor())) {
+            backColor1.setBackgroundColor(Color.parseColor(paramBean.getBackColor()));
+            backColor2.setBackgroundColor(Color.parseColor(paramBean.getBackColor()));
+            backColor3.setBackgroundColor(Color.parseColor(paramBean.getBackColor()));
+            touchText.setBackgroundColor(Color.parseColor(paramBean.getBackColor()));
+        }
 
         //获取屏幕最小边，设置为cameraPreview较窄的一边
         float screenMinSize = Math.min(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
@@ -204,7 +241,15 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
             } else {
                 cropView.setImageResource(R.mipmap.camera_idcard_back);
             }
+        } else if (paramBean.getType() == ParamBean.CUSTOM_IMAGE) {
+            if (!TextUtils.isEmpty(paramBean.getBackgroundImage())) {
+                Bitmap backGroundImage = getImageFromAssetsFile(paramBean.getBackgroundImage());
+                if (backGroundImage != null) {
+                    cropView.setImageBitmap(backGroundImage);
+                }
+            }
         }
+
 
         //手电筒配置
         if (paramBean.getEnableTorch()) {
@@ -472,8 +517,13 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
 
         //拍照完成，返回对应图片路径
         Intent intent = new Intent();
-        intent.putExtra("result", FileUtil.getImgPath());
 
+
+        if (paramBean.getFullSrc()) {
+            intent.putExtra("result", "file://" + FileUtil.getImgPath());
+        } else {
+            intent.putExtra("result", FileUtil.getImgPath());
+        }
         setResult(CameraModule.RESULT_CODE, intent);
         finish();
     }

@@ -40,9 +40,19 @@ public class ParamBean implements Serializable {
     private String text = "触摸屏幕对焦";
 
     /**
-     * ocr是否启动
+     * 背景颜色
      */
-    private Boolean ocr = false;
+    private String backColor = "#9a000000";
+
+    /**
+     * 背景图片
+     */
+    private String backgroundImage = null;
+
+    /**
+     * 全路径
+     */
+    private Boolean fullSrc = false;
 
     public void setType(Integer type) {
         this.type = type;
@@ -84,11 +94,27 @@ public class ParamBean implements Serializable {
         this.landscape = landscape;
     }
 
-    public Boolean getOcr() {
-        return ocr;
+    public String getBackColor() {
+        return backColor;
     }
 
-    public void setOcr(Boolean ocr) {
-        this.ocr = ocr;
+    public void setBackColor(String value) {
+        this.backColor = value;
+    }
+
+    public String getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(String value) {
+        this.backgroundImage = value;
+    }
+
+    public Boolean getFullSrc() {
+        return fullSrc;
+    }
+
+    public void setFullSrc(Boolean fullSrc) {
+        this.fullSrc = fullSrc;
     }
 }
