@@ -2,8 +2,8 @@
     "name" : "uni-demo",
     "appid" : "__UNI__1AF6054",
     "description" : "",
-    "versionName" : "1.0.0",
-    "versionCode" : "100",
+    "versionName" : "1.0.1",
+    "versionCode" : 101,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -55,15 +55,15 @@
         "nativePlugins" : {
             "yun-camerax" : {
                 "__plugin_info__" : {
-                    "name" : "身份证相机",
-                    "description" : "自定义身份证相机",
+                    "name" : "自定义身份证相机（支持蒙版自定义），内置蒙版，照片预览，身份证裁剪 - [试用版，仅用于自定义调试基座]",
+                    "description" : "自定义的身份证相机组件，内置蒙版，可进行照片预览，手动聚焦，部分自定义，支持横竖屏，支持自定义蒙版",
                     "platforms" : "Android",
-                    "url" : "",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=6770",
                     "android_package_name" : "",
                     "ios_bundle_id" : "",
-                    "isCloud" : false,
-                    "bought" : -1,
-                    "pid" : "",
+                    "isCloud" : true,
+                    "bought" : 0,
+                    "pid" : "6770",
                     "parameters" : {}
                 }
             }
