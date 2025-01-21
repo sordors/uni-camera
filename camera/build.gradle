@@ -3,15 +3,14 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion "30.0.3"
-
+    compileSdkVersion 35
+    buildToolsVersion '35.0.0'
+    namespace 'com.yun.camera'
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 140
-        versionName "1.4.0"
-
+        targetSdkVersion 33
+        versionCode 150
+        versionName "1.5.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -33,14 +32,19 @@ dependencies {
     compileOnly fileTree(dir: 'libs', include: ['*.aar'])
     compileOnly fileTree(dir: '../app/libs', include: ['uniapp-v8-release.aar'])
 
-    compileOnly 'androidx.recyclerview:recyclerview:1.0.0'
-    compileOnly 'androidx.legacy:legacy-support-v4:1.0.0'
-    compileOnly 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'com.alibaba:fastjson:1.2.83'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    implementation 'androidx.core:core:1.1.0'
+    implementation "androidx.fragment:fragment:1.1.0"
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.facebook.fresco:fresco:2.5.0'
+    implementation "com.facebook.fresco:animated-gif:2.5.0"
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'com.alibaba:fastjson:1.2.83'
+    implementation 'androidx.webkit:webkit:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
-    def camerax_version = '1.1.0-beta01'
+    def camerax_version = '1.4.1'
     implementation "androidx.camera:camera-core:$camerax_version"
     // CameraX core library using camera2 implementation
     implementation "androidx.camera:camera-camera2:$camerax_version"

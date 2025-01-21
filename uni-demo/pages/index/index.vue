@@ -34,6 +34,11 @@
 				<button @click="custom8" class="box-btn">背景透明</button>
 				<button @click="custom9" class="box-btn">自定义蒙版</button>
 			</view>
+			<view class="title">自定义4</view>
+			<view class="box">
+				<button @click="custom10" class="box-btn">无裁剪</button>
+				<button @click="custom8" class="box-btn">有裁剪(默认)</button>
+			</view>
 			<view style="margin-top: 20px;"><image :src="src" style="width: 100%;" @error="imageError"></image></view>
 		</view>
 	</view>
@@ -182,6 +187,14 @@ export default {
 						}
 					}
 				});
+			});
+		},
+		custom10(){
+			let _this = this;
+			//设置type为不存在值的即可
+			cameraModule.takePhoto({ type: 1, imageIndex: 1, isCut: false }, res => {
+				console.log(res);
+				_this.src = 'file://' + res.file;
 			});
 		}
 	}

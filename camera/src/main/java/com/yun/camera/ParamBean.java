@@ -49,6 +49,12 @@ public class ParamBean implements Serializable {
      */
     private String backgroundImage = null;
 
+
+    /**
+     * 是否裁剪
+     */
+    private Boolean isCut = true;
+
     /**
      * 全路径
      */
@@ -116,5 +122,14 @@ public class ParamBean implements Serializable {
 
     public void setFullSrc(Boolean fullSrc) {
         this.fullSrc = fullSrc;
+    }
+
+
+    public Boolean getIsCut() {
+        return isCut;
+    }
+
+    public void setIsCut(Boolean isCut) {
+        this.isCut = isCut;
     }
 }

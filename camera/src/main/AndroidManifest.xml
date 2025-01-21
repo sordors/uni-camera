@@ -25,7 +25,7 @@
     <!--android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"-->
     <application>
         <activity android:name="com.yun.camera.activity.CameraxActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
+            android:theme="@style/AppTheme.NoActionBar.FullScreen"
             />
     </application>
 </manifest>

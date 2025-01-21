@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -173,8 +174,17 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN); // 隐藏状态栏
+        //隐藏状态栏
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            decorView.setSystemUiVisibility(uiOptions);
+        } else {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
 
         setContentView(R.layout.camerax);
         cameraContainer = findViewById(R.id.camera_container);
@@ -498,11 +508,14 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
         }
 
         //裁剪及保存到文件
-        Bitmap resBitmap = Bitmap.createBitmap(photoBitmap,
-                (int) (left * (float) photoBitmap.getWidth()),
-                (int) (top * (float) photoBitmap.getHeight()),
-                (int) ((right - left) * (float) photoBitmap.getWidth()),
-                (int) ((bottom - top) * (float) photoBitmap.getHeight()));
+        Bitmap resBitmap = photoBitmap;
+        if (paramBean.getIsCut()) {
+            resBitmap = Bitmap.createBitmap(photoBitmap,
+                    (int) (left * (float) photoBitmap.getWidth()),
+                    (int) (top * (float) photoBitmap.getHeight()),
+                    (int) ((right - left) * (float) photoBitmap.getWidth()),
+                    (int) ((bottom - top) * (float) photoBitmap.getHeight()));
+        }
 
         FileUtil.saveBitmap(this, resBitmap);
 
@@ -579,7 +592,6 @@ public final class CameraxActivity extends FragmentActivity implements View.OnCl
                     }
                     matrix.postRotate(degree);
                     photoBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
                 } else {
                     photoBitmap = Tools.bitmapClip(file.getAbsolutePath());
                 }

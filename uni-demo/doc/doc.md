@@ -11,6 +11,8 @@
 - 手动聚焦
 - 支持横屏竖屏
 - 支持自定义蒙版文件
+- 支持关闭自动裁剪
+
 # 参数
 
 参数|类型|默认值|参数说明
@@ -23,6 +25,7 @@ landscape|Boolean|true|是否横屏，默认true
 backColor|String|#9a000000|背景色，默认半透明，全透明需不传
 backgroundImage|String|null|自定义蒙版背景图片，type为2时启用
 fullSrc|Boolean|false|是否返回全路径，默认false
+isCut|Boolean|true|是否裁剪，默认true
 
 # 自定义蒙版文件说明
 
@@ -73,4 +76,10 @@ fullSrc|Boolean|false|是否返回全路径，默认false
 
     });
 
+```
+
+# APP预览下载
+```
+夸克网盘：https://pan.quark.cn/s/4a6e1a51d2b1
+提取码：m36r
 ```
